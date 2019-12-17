@@ -18,6 +18,9 @@ const WebGLMacros = // when whole 'WebGLMacros' is 'const', all inside it are au
 var perspectiveProjectionMatrix;
 var bLKeyPressed=false;
 
+//KeysForSeperatePart
+//Ajay's Matrix first Part
+var scene_one_Ajay_matrix_part = true;
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -85,6 +88,18 @@ function keyDown(event)
 			// close our application's tab
 			window.close();// may not work in Firefox but works in Safari and chrome
 			break;
+			
+		//Key D animation is for Ajay's Matrix Part
+		case 68:
+		case 100:
+			if(scene_one_Ajay_matrix_part)
+			{
+				iStart = START;
+				fSpeed = 0.4;// * 0.5;// * 5.5;
+				fCSpeed = 0.0512;// * 0.5;// * 5.5;
+				fCDecrement = 0.1;// * 0.5;// * 5.0;
+			}
+			break;
 	}
 	
 }
@@ -110,7 +125,10 @@ function init()
 	
 	//IMPORTANT => call your initialize here.
 	//perFragmentInitialize();
-	
+	if(scene_one_Ajay_matrix_part == true)
+	{
+		Matrix_Initialize();
+	}
     
 	// set clear color
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);	// blue
@@ -125,6 +143,10 @@ function draw()
 	
 	//IMPORTANT => call your draw here.
 	//perFragmentDraw();
+	if(scene_one_Ajay_matrix_part == true)
+	{
+		Matrix_Draw();
+	}
 	
 	requestAnimationFrame(draw, canvas);
 }
@@ -153,6 +175,10 @@ function uninitialize()
 	
 	//IMPORTANT => Call your uninitialize here.
 	//perFragmentUninitialize();
+	if(scene_one_Ajay_matrix_part == true)
+	{
+		Matrix_Uninitialize();
+	}
 	
 }
 
