@@ -19,10 +19,8 @@ var perspectiveProjectionMatrix;
 var bLKeyPressed=false;
 
 //KeysForSeperatePart
-//Ajay's Matrix first Part
-var scene_one_Ajay_matrix_part = true;
 //Nagesh's City fourth Part
-var scene_four_Nagesh_city_part = false;
+var scene_four_Nagesh_city_part = true;
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -37,8 +35,8 @@ var cancelAnimationFrame = window.cancelAnimationFrame ||
 							window.mozCancelAnimationFrame ||window.mozCancelRequestAnimationFrame ||
 							window.oCancelAnimationFrame || window.oCancelRequestAnimationFrame ||
 							window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame;	
-							
-							
+		
+
 // onload function
 function MatrixMain()
 {
@@ -54,12 +52,12 @@ function MatrixMain()
 					
 	canvas_original_width = canvas.width;
 	canvas_original_height = canvas.height;
-	
+
 	// register keyboard's keydown event handler
 	window.addEventListener("keydown", keyDown, false);
 	window.addEventListener("click", mouseDown, false);
 	window.addEventListener("resize", resize, false);
-	
+
 	// initialize WebGL
 	init();
 	
@@ -68,21 +66,13 @@ function MatrixMain()
 	draw();
 }
 
-function keyDown(event) 
+
+
+function keyDown(event)
 {
-	
 	 // code
 	switch(event.keyCode) 
 	{
-		//1		
-		case 49: //1
-			scene_one_Ajay_matrix_part = true;
-			scene_four_Nagesh_city_part = false;
-		break;
-		case 52: //4
-			scene_one_Ajay_matrix_part = false;
-			scene_four_Nagesh_city_part = true;
-			break;
 		case 76: // for 'L' or 'l'
             if(bLKeyPressed==false)
                 bLKeyPressed=true;
@@ -99,18 +89,7 @@ function keyDown(event)
 			// close our application's tab
 			window.close();// may not work in Firefox but works in Safari and chrome
 			break;
-			
-		//Key D animation is for Ajay's Matrix Part
-		case 68:
-			if(scene_one_Ajay_matrix_part == true)
-			{
-				iStart = START;
-				fSpeed = 0.4;// * 0.5;// * 5.5;
-				fCSpeed = 0.0512;// * 0.5;// * 5.5;
-				fCDecrement = 0.1;// * 0.5;// * 5.0;
-			}
-			break;
-			
+
 		case 40://Down Arrow
 		if(scene_four_Nagesh_city_part == true)
 		{
@@ -129,13 +108,6 @@ function keyDown(event)
 		}
 		break;
 		case 100://Left NumPad  Arrow 4
-		if(scene_one_Ajay_matrix_part == true)
-		{
-				iStart = START;
-				fSpeed = 0.4;// * 0.5;// * 5.5;
-				fCSpeed = 0.0512;// * 0.5;// * 5.5;
-				fCDecrement = 0.1;// * 0.5;// * 5.0;
-		}
 		if(scene_four_Nagesh_city_part == true)
 		{
 			//cameraAngleY=Math.atan(((cameraCentreZ-cameraPositionZ)/(cameraCentreX-cameraPositionX) ));
@@ -173,11 +145,11 @@ function keyDown(event)
 		}
 		break;
 	}
-	
 }
 
-function mouseDown() {
-	
+function mouseDown()
+{
+//alert("Mouse Is clicked");
 }
 
 function init()
@@ -197,39 +169,35 @@ function init()
 	
 	//IMPORTANT => call your initialize here.
 	//perFragmentInitialize();
-	//1st part Ajay's Matrix init
-	Matrix_Initialize();
 	
-	//4rth part Nagesh's City init
 	City_Initialize();
 	
+    
 	// set clear color
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);	// blue
 	
 	// initialize projection matrix
 	perspectiveProjectionMatrix = mat4.create();
+	
 }
 
-function draw() 
+
+function draw()
 {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	//IMPORTANT => call your draw here.
 	//perFragmentDraw();
-	if(scene_one_Ajay_matrix_part == true)
-	{
-		Matrix_Draw();
-	}
-	
 	if(scene_four_Nagesh_city_part == true)
 	{
 		City_Draw();
 	}
 	
 	requestAnimationFrame(draw, canvas);
+	
 }
 
-function resize() 
+function resize()
 {
 	// code
 	if (bFullscreen) 
@@ -253,10 +221,10 @@ function uninitialize()
 	
 	//IMPORTANT => Call your uninitialize here.
 	//perFragmentUninitialize();
-	
-	Matrix_Uninitialize();
-	
-	City_Uninitialize();
+	if(scene_four_Nagesh_city_part == true)
+	{
+		City_Uninitialize();
+	}
 	
 }
 
@@ -295,3 +263,5 @@ function toggleFullScreen() {
 		  bFullscreen=false;
 	 }
 }
+
+
