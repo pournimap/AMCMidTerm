@@ -22,7 +22,9 @@ var bLKeyPressed=false;
 //Ajay's Matrix first Part
 var scene_one_Ajay_matrix_part = true;
 //Nagesh's City fourth Part
-var scene_four_Nagesh_city_part = false;
+var scene_third_Nagesh_city_part = false;
+//Bharat's paper fourth Part
+var scene_fourth_Bharat_paper_part = false;
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -77,11 +79,18 @@ function keyDown(event)
 		//1		
 		case 49: //1
 			scene_one_Ajay_matrix_part = true;
-			scene_four_Nagesh_city_part = false;
+			scene_third_Nagesh_city_part = false;
+			scene_fourth_Bharat_paper_part = false;
 		break;
+		case 51: //3
+			scene_one_Ajay_matrix_part = false;
+			scene_third_Nagesh_city_part = true;
+			scene_fourth_Bharat_paper_part = false;
+			break;
 		case 52: //4
 			scene_one_Ajay_matrix_part = false;
-			scene_four_Nagesh_city_part = true;
+			scene_third_Nagesh_city_part = false;
+			scene_fourth_Bharat_paper_part = true;
 			break;
 		case 76: // for 'L' or 'l'
             if(bLKeyPressed==false)
@@ -112,7 +121,7 @@ function keyDown(event)
 			break;
 			
 		case 40://Down Arrow
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraPositionZ_city+=1.0;
 			cameraCentreZ_city=cameraPositionZ_city-0.1;
@@ -121,7 +130,7 @@ function keyDown(event)
 		}
 		break;
 		case 38://Up Arrow
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraPositionZ_city-=1.0;
 			cameraCentreZ_city=cameraPositionZ_city-0.1;
@@ -136,7 +145,7 @@ function keyDown(event)
 				fCSpeed = 0.0512;// * 0.5;// * 5.5;
 				fCDecrement = 0.1;// * 0.5;// * 5.0;
 		}
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			//cameraAngleY=Math.atan(((cameraCentreZ-cameraPositionZ)/(cameraCentreX-cameraPositionX) ));
 			cameraAngleY_city-=0.01;
@@ -146,7 +155,7 @@ function keyDown(event)
 		}
 		break;
 		case 102://Right Numpad Arrow 6
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraAngleY_city+=0.01;
 			cameraCentreX_city=cameraPositionX_city+(0.1-Math.abs(cameraCentreY_city))*Math.cos(cameraAngleY_city);
@@ -155,7 +164,7 @@ function keyDown(event)
 		}
 		break;
 		case 104://Up Numpad Arrow 8
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraAngleX_city+=0.01;
 			cameraCentreY_city=cameraPositionY_city+(0.1)*Math.cos(cameraAngleX_city);
@@ -164,7 +173,7 @@ function keyDown(event)
 		}
 		break;
 		case 98://Down Numpad Arrow 2
-		if(scene_four_Nagesh_city_part == true)
+		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraAngleX_city-=0.01;
 			cameraCentreY_city=cameraPositionY_city+(0.1)*Math.cos(cameraAngleX_city);
@@ -203,6 +212,9 @@ function init()
 	//4rth part Nagesh's City init
 	City_Initialize();
 	
+	//4rth part Bharat's paper falling
+	paper_init();
+	
 	// set clear color
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);	// blue
 	
@@ -221,11 +233,15 @@ function draw()
 		Matrix_Draw();
 	}
 	
-	if(scene_four_Nagesh_city_part == true)
+	if(scene_third_Nagesh_city_part == true)
 	{
 		City_Draw();
 	}
 	
+	if(scene_fourth_Bharat_paper_part == true)
+	{
+		paper_draw();
+	}
 	requestAnimationFrame(draw, canvas);
 }
 
@@ -258,6 +274,7 @@ function uninitialize()
 	
 	City_Uninitialize();
 	
+	paper_unititialize();
 }
 
 function toggleFullScreen() {
