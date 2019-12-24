@@ -11,7 +11,7 @@ const WebGLMacros = // when whole 'WebGLMacros' is 'const', all inside it are au
 	AMC_ATTRIBUTE_POSITION:0,
 	AMC_ATTRIBUTE_COLOR:1,
 	AMC_ATTRIBUTE_NORMAL:2,
-	AMC_ATTRIBUTE_TEXTURE:3,	
+	AMC_ATTRIBUTE_TEXTURE:3
 };
 
 //common for all
@@ -67,6 +67,14 @@ function keyDown(event)
 	 // code
 	switch(event.keyCode) 
 	{
+		case 50:
+			lookAtZ += 0.02;
+			break;
+		
+		case 56:
+			lookAtZ -= 0.02;
+			break;
+			
 		case 68:
 		case 100:
 			iStart = START;
@@ -159,7 +167,7 @@ function uninitialize()
 	
 	//IMPORTANT => Call your uninitialize here.
 	//perFragmentUninitialize();
-	//Matrix_Uninitialize();
+	Matrix_Uninitialize();
 	
 }
 

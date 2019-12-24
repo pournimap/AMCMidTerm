@@ -26,6 +26,8 @@ function Matrix_Update() {
 			fSpeed = 0.4;
 			fCSpeed = 0.0512;
 			fCDecrement = 0.1;
+			
+			countOfReappearance++;
 		}
 		
 		if (ytranslate[0] <= 4.5) 
