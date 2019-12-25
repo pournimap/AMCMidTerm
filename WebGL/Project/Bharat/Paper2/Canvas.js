@@ -18,11 +18,6 @@ const WebGLMacros = // when whole 'WebGLMacros' is 'const', all inside it are au
 var perspectiveProjectionMatrix;
 var bLKeyPressed=false;
 
-// coordinates for camera
-var cameraPosition 	= [0.0, 0.0, 5.1];
-var cameraCenter	= [0.0, 0.0, 0.0];
-var cameraUp		= [0.0, 1.0, 0.0];
-
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -73,98 +68,13 @@ function keyDown(event)
 	
 	 // code
 	switch(event.keyCode) 
-	{	/*
+	{
 		case 76: // for 'L' or 'l'
             if(bLKeyPressed==false)
                 bLKeyPressed=true;
             else
                 bLKeyPressed=false;
-			break;
-		*/	
-		// a
-		case 65:
-		case 97:
-			cameraCenter[0] = cameraCenter[0] - 0.1;
-			break;
-
-		// d
-		case 68:
-		case 100:
-				cameraCenter[0] = cameraCenter[0] + 0.1;
-			break;
-		
-		// s
-		case 83:
-		case 115:
-				cameraCenter[1] = cameraCenter[1] - 0.1;
-			break;
-
-		// w
-		case 87:
-		case 119:
-				cameraCenter[1] = cameraCenter[1] + 0.1;
-			break;
-
-		// q
-		case 81:
-		case 113:
-			cameraUp[0] = cameraUp[0] + 0.1;
-			break;
-
-		// e
-		case 69:
-		case 101:
-				cameraUp[0] = cameraUp[0] - 0.1;
-			break;
-	
-		// i
-		case 73:
-		case 105:
-			cameraPosition[2] = cameraPosition[2] - 0.1;
-			break;
-
-		// o
-		case 79:
-		case 111:
-				cameraPosition[2] = cameraPosition[2] + 0.1;
-			break;
-
-		// j
-		case 74:
-		case 106:
-				cameraPosition[0] = cameraPosition[0] - 0.1;
-				cameraCenter[0] = cameraCenter[0] - 0.1;
-			break;
-
-		// k
-		case 75:
-		case 107:
-				cameraPosition[0] = cameraPosition[0] + 0.1;
-				cameraCenter[0] = cameraCenter[0] + 0.1;
-			break;
-
-		// h
-		case 72:
-		case 104:
-				cameraPosition[1] = cameraPosition[1] - 0.1;
-				cameraCenter[1] = cameraCenter[1] - 0.1;
-			break;
-
-		// l
-		case 76:
-		case 108:
-			cameraPosition[1] = cameraPosition[1] + 0.1;
-			cameraCenter[1] = cameraCenter[1] + 0.1;
-			break;
-
-
-		// p
-		case 80:
-		case 112:
-			console.log("position : "+cameraPosition[0]+" "+cameraPosition[1]+" "+cameraPosition[2]);
-			console.log("center   : "+cameraCenter[0]+" "+cameraCenter[1]+" "+cameraCenter[2]);
-			console.log("up       : "+cameraUp[0]+" "+cameraUp[1]+" "+cameraUp[2]);
-			break;
+            break;
 			
 		case 70:// for 'F' or 'f'
 			toggleFullScreen();
@@ -185,7 +95,6 @@ function mouseDown() {
 
 function init()
 {
-	toggleFullScreen();
 	// code
 	// get WebGL 2.0 context
 	gl =canvas.getContext("webgl2");
