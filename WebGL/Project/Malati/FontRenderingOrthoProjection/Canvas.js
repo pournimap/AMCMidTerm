@@ -157,6 +157,7 @@ function uninitialize()
 	
 	//IMPORTANT => Call your uninitialize here.
 	//perFragmentUninitialize();
+	uninitialize_FontRender();
 	
 }
 

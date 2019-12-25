@@ -420,3 +420,30 @@ function colorFromString( string, fallback_value = [0,0,0] ) {
     var r = ( ( val >> 16 ) & 0xff ) / 255.0;
     return [ r, g, b ];
 }
+
+function uninitialize_FontRender()
+{
+	// code
+	if (vbo_text_position) {
+		gl.deleteBuffer(vbo_text_position);
+		vbo_text_position = null;
+	}
+	
+	if (text_shaderProgramObject) {
+		if (text_fragmentShaderSourceCode) {
+			gl.detachShader(text_shaderProgramObject, text_fragmentShaderSourceCode);
+			gl.deleteShader(text_fragmentShaderSourceCode);
+			text_fragmentShaderSourceCode = null;
+		}
+		
+		if (text_vertexShaderObject) {
+			gl.detachShader(text_shaderProgramObject, text_vertexShaderObject);
+			gl.deleteShader(text_vertexShaderObject);
+			text_vertexShaderObject = null;
+		}
+		
+		gl.deleteProgram(text_shaderProgramObject);
+		text_shaderProgramObject = null;
+	}
+
+}
