@@ -211,6 +211,7 @@ function init()
 	
 	//4rth part Nagesh's City init
 	City_Initialize();
+	initCubeMap();
 	
 	//4rth part Bharat's paper falling
 	paper_init();
@@ -235,6 +236,7 @@ function draw()
 	
 	if(scene_third_Nagesh_city_part == true)
 	{
+		drawCubemap();
 		City_Draw();
 	}
 	

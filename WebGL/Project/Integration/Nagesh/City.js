@@ -16,15 +16,22 @@ var sizeStrackMatrix_city=0;
 var translateX_city=0.0;
 var translateZ_city=-25.0;
 var translateY_city=0.0;
-var cameraPositionZ_city=0.0;
+var cameraPositionZ_city=20.0;
 var cameraPositionX_city=0.0;
 var cameraPositionY_city=0.0;
 var cameraAngleX_city=0.0;
 var cameraAngleY_city=0.0;
 var cameraCentreX_city=0.0;
-var cameraCentreY_city=0.0;
-var cameraCentreZ_city=0.0;
+var cameraCentreY_city=10.0;
+var cameraCentreZ_city=-85.0;
 
+
+var centre;
+var cameraPos;
+var cameraUp;
+
+
+var normalFlow=true;
 
 function City_Initialize()
 {	
@@ -95,7 +102,7 @@ function City_Initialize()
 
 	//Linking the Program
 	gl.linkProgram(shaderProgramObject_city);
-	if(gl.getProgramParameter(shaderProgramObject_city,gl.LINK_STATUS) == false)
+	if(!gl.getProgramParameter(shaderProgramObject_city,gl.LINK_STATUS))
 	{
 		var error=gl.getProgramInfoLog(shaderProgramObject_city)
 		if(error.length>0)
@@ -152,10 +159,16 @@ function City_Initialize()
 
 	gl.bindVertexArray(null);
 
-	cameraCentreZ_city=cameraPositionZ_city-1.0;
+	//cameraCentreZ_city=cameraPositionZ_city-1.0;
 	cameraAngleY_city=Math.atan(((cameraCentreZ_city-cameraPositionZ_city)/(cameraCentreX_city-cameraPositionX_city) ));
 	cameraAngleX_city=Math.atan(((cameraCentreZ_city-cameraPositionZ_city)/(cameraCentreY_city-cameraPositionY_city) ));
 
+
+
+	 centre=[cameraCentreX_city,cameraCentreY_city,cameraCentreZ_city];
+
+	 cameraUp=[0.0,1.0,0.0];
+	 cameraPos=[cameraPositionX_city,cameraPositionY_city,cameraPositionZ_city];//x,y,z
 
 	gl.enable(gl.DEPTH_TEST);
 	gl.depthFunc(gl.LEQUAL);
@@ -174,18 +187,60 @@ function City_Draw()
 	if(translateY>=0.0)
 		translateY=-20.0;*/
 	translateY_city=-2.0;
-	//CameraImplementation6
-	//cameraPositionZ-=0.5;
-	if(cameraPositionZ_city<=-85.0)
-		cameraPositionZ_city=25.0;
+	
+	// if(cameraPositionZ_city<=-85.0)
+		// cameraPositionZ_city=25.0;
 	var viewMatrix=mat4.create();
 	//cameraCentreX=(cameraCentreX==0.0)?cameraCentreX:(cameraCentreX-0.1);
 	//cameraCentreY=(cameraCentreY==0.0)?cameraCentreY:(cameraCentreY-0.1);
 	//cameraCentreZ=(cameraCentreZ==0.0)?cameraCentreZ:(cameraCentreZ-0.1);
+	
+	if(normalFlow==true)
+	{
+		if(cameraPositionZ_city>=-50.0)
+		{
+			cameraPositionZ_city-=0.1;
+			
+		}
+		else
+		{
+			normalFlow=false;
+		}
+		
+	}	
+	else
+	{
+		var multFactor=5.0;
+		if(cameraPositionX_city<=0.0)
+		{
+			
+			cameraPositionZ_city+=multFactor*(0.3/4.0);
+			cameraPositionX_city+=multFactor*0.01;
+		}
+		else if(cameraCentreX_city<=0.0)
+		{
+			cameraCentreX_city+=multFactor*0.1;
+			
+		}
+		else if(cameraCentreY_city<=10.0)
+		{
+			cameraCentreY_city+=multFactor*0.1;
+			
+		}
+		else if(cameraPositionZ_city<=20.0)
+		{
+			cameraPositionZ_city+=multFactor*(0.1);
+		}
+		else
+		{
+			normalFlow=true;
+		}
+		
+	}
+		  centre=[cameraCentreX_city,cameraCentreY_city,cameraCentreZ_city];
+	 cameraPos=[cameraPositionX_city,cameraPositionY_city,cameraPositionZ_city];//x,y,z
 
-	var centre=[cameraCentreX_city,cameraCentreY_city,cameraCentreZ_city];
-	var cameraUp=[0.0,1.0,0.0];
-	var cameraPos=[cameraPositionX_city,cameraPositionY_city,cameraPositionZ_city];//x,y,z
+
 	mat4.lookAt(viewMatrix,cameraPos,centre,cameraUp);
 
 	//viewMatrix=mat4.create();
@@ -224,7 +279,7 @@ function City_Draw()
 	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
 
 	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
-	building(2.0,3.0,1.0);
+	//building(2.0,3.0,1.0);
 
 
 	modelMatrix=mat4.create();
@@ -240,36 +295,379 @@ function City_Draw()
 
 	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
 
-	/*
-
+	
+/*
 	//modelViewMatrix=mat4.create();
 	mat4.translate(modelViewMatrix,viewMatrix,[-2.0,0.0,translateZ]);
 	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
 
 	gl.uniformMatrix4fv(mvpUniform,false,modelViewProjectionMatrix);
 	*/
-	building(2.0,3.0,1.0);
+	//building(2.0,3.0,1.0);
 
 	
+	
+	
+	excessiveBuildings(viewMatrix);
 
 	gl.useProgram(null);
 
 }
 
+ 
 
-function excessiveBuildings()
+
+function excessiveBuildings(viewMatrix)
 {
 
-
+	var modelMatrix=mat4.create();
 	var modelViewMatrix=mat4.create();
 	var modelViewProjectionMatrix=mat4.create();
-	mat4.translate(modelViewMatrix,modelViewMatrix,[4.5,0.0,translateY-10.0]);
+	
+	
+	
+	
+	//In Between Origin And Initial Camera Position
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+5.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
 	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
 
 	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
 
 	building(3.5,8.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+2.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
 
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+5.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+4.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+5.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+10.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,20.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+18.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+18.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+15.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city+20.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+15.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+12.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city+22.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,13.0,2.2);
+	
+	
+	//Origin and Further
+	modelMatrix=mat4.create();
+
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city-5.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city-2.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,8.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city-2.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,10.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city-3.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,8.0,2.2);
+	
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[4.5,0.0,translateZ_city-10.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(3.5,8.0,2.2);
+	
+	modelMatrix=mat4.create();
+	mat4.translate(modelMatrix,modelMatrix,[7.5,0.0,translateZ_city-4.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,25.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-10.5,0.0,translateZ_city-1.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,2.2);
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-14.5,0.0,translateZ_city-4.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,5.2);
+	
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[10.5,0.0,translateZ_city-4.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,2.2);
+	
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-17,0.0,translateZ_city-8.0])
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,2.2);
+	
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-4.5,0.0,translateZ_city-10.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,2.2);
+	
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-10.5,0.0,translateZ_city-1.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,15.0,2.2);
+	
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[5.5,0.0,translateZ_city-20.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,10.0,2.2);
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-5.5,0.0,translateZ_city-20.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,10.0,2.2);
+	
+	
+	
+	
+	modelMatrix=mat4.create()
+	mat4.translate(modelMatrix,modelMatrix,[-5.5,0.0,translateZ_city-23.0]);
+	mat4.multiply(modelViewMatrix,viewMatrix,modelMatrix);
+	mat4.multiply(modelViewProjectionMatrix,perspectiveProjectionMatrix,modelViewMatrix);
+
+	gl.uniformMatrix4fv(mvpUniform_city,false,modelViewProjectionMatrix);
+
+	building(4.5,10.0,2.2);
+	
+	
+	
+	
 }
 
 
@@ -281,17 +679,43 @@ function road()
 	var roadLineCoordinates_city=new Float32Array([
 
 					-1.0,-1.0,40.0, //Appex
-					-1.0,-1.0,-40.0, //Left-Bottom
+					-1.0,-1.0,-30.0, //Left-Bottom
 					1.0,-1.0,40.0,	//Right-Bottom
-					1.0,-1.0,-40.0
+					1.0,-1.0,-30.0
 
 					]);
 
 	var roadLineColor_city=new Float32Array([
-					1.0,0.0,0.0, //Appex
-					0.0,1.0,0.0, //Left-Bottom
-					0.0,0.0,1.0,	//Right-Bottom
+					1.0,0.0,0.0,
+					0.0,1.0,0.0, 
+					0.0,0.0,1.0,	
 					1.0,1.0,1.0
+					]);
+
+	// Junction Point Y Point
+	
+	
+	var roadLineYJunction_city=new Float32Array([
+
+					-1.0,-1.0,-30.0, 
+					-5.0,-1.0,-60.0,
+					0.0,-1.0,-30.0,
+					-2.0,-1.0,-60.0,
+					1.0,-1.0,-30.0,
+					5.0,-1.0,-60.0,
+					0.0,-1.0,-30.0,
+					2.0,-1.0,-60.0
+
+					]);
+	var roadLineYJunctionColor_city=new Float32Array([
+					1.0,1.0,0.0,
+					0.0,1.0,1.0,
+					1.0,0.0,1.0,
+					0.0,0.0,1.0,
+					1.0,1.0,0.0,
+					0.0,1.0,1.0,
+					1.0,0.0,1.0,
+					0.0,0.0,1.0
 					]);
 
 
@@ -299,7 +723,7 @@ function road()
 	//vao=gl.createVertexArray();
 	gl.bindVertexArray(vao_city);
 
-	vbo_city=gl.createBuffer();
+	//vbo=gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
 	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
 	gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates_city,gl.DYNAMIC_DRAW,0,roadLineCoordinates_city.length);
@@ -309,7 +733,7 @@ function road()
 
 
 
-	vbo_color_city=gl.createBuffer();
+	//vbo_color=gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
 	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
 	gl.bufferData(gl.ARRAY_BUFFER,roadLineColor_city,gl.DYNAMIC_DRAW,0,roadLineColor_city.length);
@@ -319,11 +743,279 @@ function road()
 
 
 	gl.drawArrays(gl.LINES,0,4);
-	//gl.drawArrays(gl.LINES,1,2);
-	//gl.drawArrays(gl.LINES,2,2);
-	//gl.drawArrays(gl.TRIANGLE_FAN,0,4);
 	gl.bindVertexArray(null);
 
+
+
+
+	//Y Junction Left Drawing
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,roadLineYJunction_city,gl.DYNAMIC_DRAW,0,roadLineYJunction_city.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,roadLineYJunctionColor_city,gl.DYNAMIC_DRAW,0,roadLineYJunctionColor_city.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.LINES,0,8);
+	gl.bindVertexArray(null);
+	
+	
+	var YJunctionBuilding=new Float32Array([
+			
+			0.0,8.0,-35.0,
+			0.0,-1.0,-35.0,
+			1.5,-1.0,-55.0,
+			1.0,8.0,-55.0,
+			
+			0.0,8.0,-35.0,
+			0.0,-1.0,-35.0,
+			-1.5,-1.0,-55.0,
+			-1.0,8.0,-55.0
+			
+					]);
+					
+	var YJunctionBuildingColor=new Float32Array([
+			
+			1.0,0.0,0.0,
+			1.0,1.0,0.0,
+			0.0,1.0,1.0,
+			1.0,1.0,1.0,
+			
+			
+			1.0,0.0,0.0,
+			1.0,1.0,0.0,
+			0.0,1.0,1.0,
+			1.0,1.0,1.0
+			
+					]);
+	
+	
+	
+	//Y Junction Left Drawing
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,YJunctionBuilding,gl.DYNAMIC_DRAW,0,YJunctionBuilding.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,YJunctionBuildingColor,gl.DYNAMIC_DRAW,0,YJunctionBuildingColor.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.TRIANGLE_FAN,0,8);
+	gl.bindVertexArray(null);
+	
+	
+	//Flex
+	
+	var Flex=new Float32Array([
+			
+			-2.0,8.0,-35.0,
+			-2.0,5.0,-35.0,
+			2.0,5.0,-35.0,
+			2.0,8.0,-35.0,
+			
+			
+					]);
+					
+	var FlexColor=new Float32Array([
+			
+			1.0,1.0,1.0,
+			1.0,1.0,1.0,
+			1.0,1.0,1.0,
+			1.0,1.0,1.0
+					]);
+					
+					
+					
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,Flex,gl.DYNAMIC_DRAW,0,Flex.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FlexColor,gl.DYNAMIC_DRAW,0,FlexColor.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.TRIANGLE_FAN,0,4);
+	gl.bindVertexArray(null);
+	
+	
+	
+	
+	//Front Flex
+	var FrontFlexZ=25.0
+	var FrontFlexLeftX=-12.0;
+	var FrontFlexBottomY=3.0;
+	var FrontFlexWidth=10.0;
+	var FrontFlexHeight=10.0;
+	
+	var FrontFlexVertices=new Float32Array([
+
+			FrontFlexLeftX+FrontFlexWidth,FrontFlexBottomY+FrontFlexHeight,FrontFlexZ,
+			FrontFlexLeftX,FrontFlexBottomY+FrontFlexHeight,FrontFlexZ,
+			FrontFlexLeftX,FrontFlexBottomY,FrontFlexZ,
+			FrontFlexLeftX+FrontFlexWidth,FrontFlexBottomY,FrontFlexZ
+					]);
+	var FrontFlexColor=new Float32Array([
+			1.0,1.0,1.0,
+			1.0,1.0,1.0,
+			1.0,1.0,1.0,
+			1.0,1.0,1.0
+	
+				]);
+	
+			
+		
+			
+					
+					
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexVertices,gl.DYNAMIC_DRAW,0,FrontFlexVertices.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexColor,gl.DYNAMIC_DRAW,0,FrontFlexColor.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.TRIANGLE_FAN,0,4);
+	gl.bindVertexArray(null);
+	
+	
+	
+	
+	//Poles
+	
+	var FrontFlexLeftPole=new Float32Array([
+			FrontFlexLeftX+2.0,-2.0,FrontFlexZ,
+			FrontFlexLeftX+2.2,-2.0,FrontFlexZ,
+			FrontFlexLeftX+2.2,FrontFlexBottomY,FrontFlexZ,
+			FrontFlexLeftX+2.0,FrontFlexBottomY,FrontFlexZ
+			]);
+			
+	var FrontFlexPoleColor=new Float32Array([
+			0.0,0.0,0.0,
+			0.0,0.0,0.0,
+			0.0,0.0,0.0,
+			0.0,0.0,0.0
+	
+				]);	
+	var FrontFlexRightPole=new Float32Array([
+			FrontFlexLeftX+FrontFlexWidth-2.0,-2.0,FrontFlexZ,
+			FrontFlexLeftX+FrontFlexWidth-1.8,-2.0,FrontFlexZ,
+			FrontFlexLeftX+FrontFlexWidth-1.8,FrontFlexBottomY,FrontFlexZ,
+			FrontFlexLeftX+FrontFlexWidth-2.0,FrontFlexBottomY,FrontFlexZ
+			]);
+	
+	
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexLeftPole,gl.DYNAMIC_DRAW,0,FrontFlexLeftPole.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexPoleColor,gl.DYNAMIC_DRAW,0,FrontFlexPoleColor.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.TRIANGLE_FAN,0,4);
+	gl.bindVertexArray(null);
+	
+	//Right Pole
+	
+	gl.bindVertexArray(vao_city);
+
+	//vbo=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexRightPole,gl.DYNAMIC_DRAW,0,FrontFlexRightPole.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+
+	//vbo_color=gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
+	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER,FrontFlexPoleColor,gl.DYNAMIC_DRAW,0,FrontFlexPoleColor.length);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR,3,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER,null);
+
+
+	gl.drawArrays(gl.TRIANGLE_FAN,0,4);
+	gl.bindVertexArray(null);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 function pushMatrix( newMartix)
@@ -426,7 +1118,7 @@ function building(length,height,width)
 	//vao=gl.createVertexArray();
 	gl.bindVertexArray(vao_city);
 
-	vbo_city=gl.createBuffer();
+	//vbo=gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_city);
 	//gl.bufferData(gl.ARRAY_BUFFER,roadLineCoordinates,gl.DYNAMIC_DRAW);
 	gl.bufferData(gl.ARRAY_BUFFER,buildingVertices_city,gl.DYNAMIC_DRAW,0,buildingVertices_city.length);
@@ -436,7 +1128,7 @@ function building(length,height,width)
 
 
 
-	vbo_color_city=gl.createBuffer();
+	//vbo_color=gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER,vbo_color_city);
 	//gl.bufferData(gl.ARRAY_BUFFER,roadLineColor,gl.DYNAMIC_DRAW);
 	gl.bufferData(gl.ARRAY_BUFFER,buildingColor_city,gl.DYNAMIC_DRAW,0,buildingColor_city.length);
@@ -494,7 +1186,7 @@ function City_Uninitialize()
 
 		}
 
-		gl.deleteProgram(shaderProgramObject_city);
+		gl.deleteProgram(shaderProgramObjcet_city);
 		shaderProgramObject_city=null;
 	}
 }
