@@ -23,8 +23,6 @@ var cameraPosition 	= [0.0, 0.0, 5.1];
 var cameraCenter	= [0.0, 0.0, 0.0];
 var cameraUp		= [0.0, 1.0, 0.0];
 
-var scene_stop = 0;
-
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -176,14 +174,6 @@ function keyDown(event)
 			uninitialize();
 			// close our application's tab
 			window.close();// may not work in Firefox but works in Safari and chrome
-			break;
-
-		case 90:
-		case 122:
-			if(scene_stop == 0)
-				scene_stop = 1;
-			else
-				scene_stop = 0;
 			break;
 	}
 	

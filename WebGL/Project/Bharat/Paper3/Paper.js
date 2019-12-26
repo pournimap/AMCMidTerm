@@ -34,14 +34,6 @@ var scene2_zoom_in_done 				= 0;
 var scene2_centerToRight_done 			= 0;
 var scene2_rightToLeft_done				= 0;
 
-var start_reverse = 0;
-
-var reverse_scene1_done 				= 0;
-var reverse_scene1_leftToRight_done 	= 0;
-var reverse_scene1_rightToCenter_done	= 0;
-var revesrse_scene2_zoom_out_done 		= 0;
-var reverse_centerToRight_done 			= 0;
-var reverse_rightToLeft_done 			= 0;
 
 function paper_init()
 {
@@ -212,10 +204,10 @@ function paper_init()
 
 	cubeTexcoords = new Float32Array
 	([
+		0.0, 0.0,
 		1.0, 0.0,
 		1.0, 1.0,
-		0.0, 1.0,
-		0.0, 0.0
+		0.0, 1.0, 
 	]);
 
 	vao_paper2 = gl.createVertexArray();
@@ -334,8 +326,8 @@ function paper_draw()
 	
 
 	gl.useProgram(null);
-	if(scene_stop == 0)
-		paper_update();
+
+	paper_update();
 }
 
 function paper_update()
@@ -515,296 +507,24 @@ function paper_update()
 	}
 
 	// scene 2 - end
-	if(scene2_rightToLeft_done == 1 && start_reverse == 0)
+	if(scene2_rightToLeft_done == 1)
 	{
 		if(cameraPosition[0] < -0.8)
 		{
 			cameraPosition[0] = cameraPosition[0] + 0.01;
-			if(start_reverse == 1)
-			{
-				start_reverse = 0;
-			}
-		}
-		else
-		{
-			start_reverse = 1;
 		}
 
 		if(cameraCenter[0] < -0.8)
 		{
 			cameraCenter[0] = cameraCenter[0] + 0.01;
-			if(start_reverse == 1)
-			{
-				start_reverse = 0;
-			}
-		}
-		else
-		{
-			start_reverse = 1;
 		}
 
 		if(cameraPosition[2] >= -3.6)
 		{
 			cameraPosition[2] = cameraPosition[2] - 0.01;
-			if(start_reverse == 1)
-			{
-				start_reverse = 0;
-			}
 		}
-		else
-		{
-			start_reverse = 1;
-		}
+
 	}	
-
-
-	// REVERSE ---------------
-
-	if(start_reverse == 1)
-	{
-		// center to right and back side
-		if(reverse_scene1_done == 0 )
-		{
-			if(cameraPosition[0] >= -4.8)
-			{
-				cameraPosition[0] = cameraPosition[0] - 0.05;
-				reverse_scene1_done = 0;
-			}
-			else
-			{
-				reverse_scene1_done = 1;
-			}
-
-			if(cameraCenter[0] >= -4.34)
-			{
-				cameraCenter[0] = cameraCenter[0] - 0.05;
-				reverse_scene1_done = 0;
-			}
-			else
-			{
-				reverse_scene1_done = 1;
-			}
-
-			if(cameraPosition[2] < 1.4)
-			{
-				cameraPosition[2] = cameraPosition[2] + 0.05;
-				reverse_scene1_done = 0;
-			}
-			else
-			{
-				reverse_scene1_done = 1;
-			}
-		}
-
-		// left to right
-		if(reverse_scene1_done == 1 && reverse_scene1_leftToRight_done == 0)
-		{
-			if(cameraPosition[0] <= 3.5)
-			{
-				cameraPosition[0] = cameraPosition[0] + 0.05;
-				reverse_scene1_leftToRight_done = 0;
-			}
-			else
-			{
-				reverse_scene1_leftToRight_done = 1;
-			}
-			if(cameraCenter[0] <= 4.0)
-			{
-				cameraCenter[0] = cameraCenter[0] + 0.05;
-				reverse_scene1_leftToRight_done = 0;
-			}
-			else
-			{
-				reverse_scene1_leftToRight_done = 1;
-			}
-		}
-
-		// right to center
-		if(reverse_scene1_leftToRight_done == 1 && reverse_scene1_rightToCenter_done == 0)
-		{
-			if(cameraPosition[0] >= 0.4)
-			{
-				cameraPosition[0] = cameraPosition[0] - 0.05;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-			if(cameraPosition[1] >= 0.0)
-			{
-				cameraPosition[1] = cameraPosition[1] - 0.05;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-			if(cameraPosition[2] < 5.0)
-			{
-				cameraPosition[2] = cameraPosition[2] + 0.05;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-			
-			if(cameraCenter[0] >= 0.5)
-			{
-				cameraCenter[0] = cameraCenter[0] - 0.05;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-			if(cameraCenter[1] >= 0.0)
-			{
-				cameraCenter[1] = cameraCenter[1] - 0.05;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-
-			if(cameraUp[0] < 1.5)
-			{
-				cameraUp[0] = cameraUp[0] + 0.02;
-				reverse_scene1_rightToCenter_done = 0;
-			}
-			else
-			{
-				reverse_scene1_rightToCenter_done = 1;
-			}
-		}
-
-		// scene2 - center to zoom out and then stright camera up
-		if(reverse_scene1_rightToCenter_done == 1 && revesrse_scene2_zoom_out_done == 0)
-		{
-			if(cameraPosition[2] < 6.4)
-			{
-				cameraPosition[2] = cameraPosition[2] + 0.05;
-				revesrse_scene2_zoom_out_done = 0;
-			}
-			else
-			{
-				revesrse_scene2_zoom_out_done = 1;
-			}
-			if(cameraUp[0] >= 0.0)
-			{
-				cameraUp[0] = cameraUp[0] - 0.05;
-				revesrse_scene2_zoom_out_done = 0;
-			}
-			else
-			{
-				revesrse_scene2_zoom_out_done = 1;
-			}
-		}
-		
-		// reverse - center to right
-		if(revesrse_scene2_zoom_out_done == 1 && reverse_centerToRight_done == 0)
-		{
-			if(cameraPosition[0] <= 1.6)
-			{
-				cameraPosition[0] = cameraPosition[0] + 0.05;
-				reverse_centerToRight_done = 0;
-			}
-			else
-			{
-				reverse_centerToRight_done = 1;
-			}
-			if(cameraPosition[1] <= 0.4)
-			{
-				cameraPosition[1] = cameraPosition[1] + 0.05;
-				reverse_centerToRight_done = 0;
-			}
-			else
-			{
-				reverse_centerToRight_done = 1;
-			}
-
-			if(cameraPosition[2] >= 5.6)
-			{
-				cameraPosition[2] = cameraPosition[2] - 0.05;
-				reverse_centerToRight_done = 0;
-			}
-			else
-			{
-				reverse_centerToRight_done = 1;
-			}
-
-			if(cameraCenter[0] <= 1.6)
-			{
-				cameraCenter[0] = cameraCenter[0] + 0.05;
-			
-			}
-			if(cameraCenter[1] <= 0.4)
-			{
-				cameraCenter[1] = cameraCenter[1] + 0.05;
-			}
-
-		}
-
-		// reverse - right to left
-		// && reverse_rightToLeft_done == 0
-		if(reverse_centerToRight_done == 1 && reverse_rightToLeft_done == 0)
-		{
-			if(cameraPosition[0] >= -1.58)
-			{
-				cameraPosition[0] = cameraPosition[0] - 0.05;
-				cameraCenter[0] = cameraCenter[0] - 0.05;
-				reverse_rightToLeft_done = 0;
-			}
-			else
-			{
-				reverse_rightToLeft_done = 1;
-			}
-			if(cameraPosition[1] <= 0.6)
-			{
-				cameraPosition[1] = cameraPosition[1] + 0.05;
-				cameraCenter[1] = cameraCenter[1] + 0.05;
-				//reverse_rightToLeft_done = 0;
-			}
-			//else
-			//{
-			//	reverse_rightToLeft_done = 1;
-			//}
-		}
-
-		// reverse end coordinates. here where we need to be at end
-		if(reverse_rightToLeft_done == 1)
-		{
-			if(cameraPosition[0] < 0.0)
-			{
-				cameraPosition[0] = cameraPosition[0] + 0.01;
-				
-			}
-			if(cameraPosition[1] > 0.073)
-			{
-				cameraPosition[1] = cameraPosition[1] - 0.01;
-			}
-			if(cameraPosition[2] >= 5.195)
-			{
-				cameraPosition[2] = cameraPosition[2] - 0.01;
-			}
-
-			if(cameraCenter[0] <= -0.098)
-			{
-				cameraCenter[0] = cameraCenter[0] + 0.01;
-			}
-			if(cameraCenter[1] > 0.073)
-			{
-				cameraCenter[1] = cameraCenter[1] - 0.01;
-			}
-		}
-
-	}
-
-
-
-
 }
 
 
