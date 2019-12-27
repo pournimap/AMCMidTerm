@@ -22,13 +22,13 @@ var bLKeyPressed=false;
 //1.Ajay's Matrix first Part
 var scene_one_Ajay_matrix_part = true;
 var finishAjaysMatrixScene = false;
+
 //3.Bhushan's WebPaper second part
 var scene_third_Bhushan_webNews_part = false;
 var finishBhushansThirdScene = false;
 
 //4.Nagesh's City fourth Part
 //var scene_fourth_Nagesh_city_part = false;
-// = false;
 var finishNageshsFourthScene = false;
 
 //5.Bharat's paper fourth Part
@@ -253,6 +253,7 @@ function draw()
 	//if(scene_third_Bhushan_webNews_part == true)
 	if(finishAjaysMatrixScene == true)
 	{
+		Matrix_Uninitialize();
 		scene_one_Ajay_matrix_part = false;
 		scrollstart = true;
 		OnLine_Paper_draw();
@@ -308,7 +309,10 @@ function resize()
 		canvas.height = canvas_original_height;
 	}
 	
-	makeFramebufferObject();
+	if(scene_one_Ajay_matrix_part == true)
+	{
+		makeFramebufferObject();
+	}
 	
 	gl.viewport(0, 0, canvas.width, canvas.height);
 	
@@ -321,12 +325,16 @@ function uninitialize()
 	//IMPORTANT => Call your uninitialize here.
 	//perFragmentUninitialize();
 	
-	Matrix_Uninitialize();
+	//1
 	
+	
+	//2
 	OnLine_Paper_unintialize();
 	
+	//3
 	City_Uninitialize();
 	
+	//4
 	paper_unititialize();
 }
 
