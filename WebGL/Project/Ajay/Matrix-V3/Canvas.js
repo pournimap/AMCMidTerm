@@ -81,6 +81,7 @@ function keyDown(event)
 			fSpeed = 0.4;// * 0.5;// * 5.5;
 			fCSpeed = 0.0512;// * 0.5;// * 5.5;
 			fCDecrement = 0.1;// * 0.5;// * 5.0;
+			bMatrixScene = true;
 			break;
 		
 		case 76: // for 'L' or 'l'
