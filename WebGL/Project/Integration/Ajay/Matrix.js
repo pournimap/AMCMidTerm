@@ -971,6 +971,7 @@ function twoQuadAnimation() {
 			]);
 			
 			bMatrixScene = false;
+			finishAjaysMatrixScene = true;
 		}
 		
 		gl.bindVertexArray(vao_room);
