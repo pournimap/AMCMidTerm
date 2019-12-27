@@ -3,9 +3,9 @@ function Matrix_Update() {
 	var position = -1.5;
 
 	// code
-	IsFirstColumnReady = true;
-	IsSecondColumnReady = true;
-	IsThirdColumnReady = true;
+	//IsFirstColumnReady = true;
+	//IsSecondColumnReady = true;
+	//IsThirdColumnReady = true;
 
 	if (iStart != START)
 		return;
@@ -26,6 +26,8 @@ function Matrix_Update() {
 			fSpeed = 0.4;
 			fCSpeed = 0.0512;
 			fCDecrement = 0.1;
+			
+			countOfReappearance++;
 		}
 		
 		if (ytranslate[0] <= 4.5) 

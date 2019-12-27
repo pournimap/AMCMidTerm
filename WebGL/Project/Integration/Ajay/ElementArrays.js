@@ -1,9 +1,10 @@
 var START = 1
 
-var iStart = 0;
-var fSpeed = 0.0;
-var fCSpeed = 0.0;
-var fCDecrement = 0.0;
+var iStart = START;
+var fSpeed = 0.4;
+var fCSpeed = 0.0512;
+var fCDecrement = 0.1;
+var countOfReappearance = 0;
 
 var IsFirstColumnReady = false;
 var IsSecondColumnReady = false;
@@ -22,6 +23,8 @@ var bStartMakingFifthRowDisappear = false;
 var bStartMakingSixthRowDisappear = false;
 var bStartMakingSeventhRowDisappear = false;
 var bStartMakingEighthRowDisappear = false;
+var bMatrixHasDisappeared = false;
+var bStartMatrixAnimation = false;
 
 var G = new Float32Array(33);
 var G2 = new Float32Array(33);
