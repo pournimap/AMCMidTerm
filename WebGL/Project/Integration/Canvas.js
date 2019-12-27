@@ -24,12 +24,16 @@ var scene_one_Ajay_matrix_part = true;
 
 //3.Bhushan's WebPaper second part
 var scene_third_Bhushan_webNews_part = false;
+var finishBhushansThirdScene = false;
 
 //4.Nagesh's City fourth Part
-var scene_fourth_Nagesh_city_part = false;
+//var scene_fourth_Nagesh_city_part = false;
+// = false;
+var finishNageshsFourthScene = false;
 
 //5.Bharat's paper fourth Part
 var scene_fifth_Bharat_paper_part = false;
+var finishBharatsFifthScene = false;
 
 //6.Nagesh's City fourth Part
 var scene_sixth_Nagesh_city_part = false;
@@ -90,63 +94,63 @@ function keyDown(event)
 	{
 		//1		
 		case 49: //1
-			scene_one_Ajay_matrix_part = true;
+			/*scene_one_Ajay_matrix_part = true;
 			scene_third_Bhushan_webNews_part = false;
 			scene_fourth_Nagesh_city_part = false;
 			scene_fifth_Bharat_paper_part = false;
 			scene_sixth_Nagesh_city_part = false;
-			scene_seventh_Bhushan_webNews_part = false;
+			scene_seventh_Bhushan_webNews_part = false;*/
 		break;
 		case 50://2
 			
 		break;
 		case 51: //3
-			scene_one_Ajay_matrix_part = false;
+			//scene_one_Ajay_matrix_part = false;
 			scene_third_Bhushan_webNews_part = true;
-			scene_fourth_Nagesh_city_part = false;
+			/*scene_fourth_Nagesh_city_part = false;
 			scene_fifth_Bharat_paper_part = false;
 			scene_sixth_Nagesh_city_part = false;
-			scene_seventh_Bhushan_webNews_part = false;
+			scene_seventh_Bhushan_webNews_part = false;*/
 			
 			break;
 		case 52: //4
-		
-			scene_one_Ajay_matrix_part = false;
-			scene_third_Bhushan_webNews_part = false;
-			scene_fourth_Nagesh_city_part = true;
-			scene_fifth_Bharat_paper_part = false;
+			//scene_third_Bhushan_webNews_part = false;
+			/*scene_one_Ajay_matrix_part = false;
+			scene_third_Bhushan_webNews_part = false;*/
+			//scene_fourth_Nagesh_city_part = true;
+			/*scene_fifth_Bharat_paper_part = false;
 			scene_sixth_Nagesh_city_part = false;
-			scene_seventh_Bhushan_webNews_part = false;
+			scene_seventh_Bhushan_webNews_part = false;*/
 			
 			break;
 		case 53://5
 		
 		
-			scene_one_Ajay_matrix_part = false;
+			/*scene_one_Ajay_matrix_part = false;
 			scene_third_Bhushan_webNews_part = false;
-			scene_fourth_Nagesh_city_part = false;
+			scene_fourth_Nagesh_city_part = false;*/
 			scene_fifth_Bharat_paper_part = true;
-			scene_sixth_Nagesh_city_part = false;
-			scene_seventh_Bhushan_webNews_part = false;
+			/*scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = false;*/
 						
 			break;
 		case 54://6
 
-			scene_one_Ajay_matrix_part = false;
+			/*scene_one_Ajay_matrix_part = false;
 			scene_third_Bhushan_webNews_part = false;
 			scene_fourth_Nagesh_city_part = false;
 			scene_fifth_Bharat_paper_part = false;
 			scene_sixth_Nagesh_city_part = true;
-			scene_seventh_Bhushan_webNews_part = false;
+			scene_seventh_Bhushan_webNews_part = false;*/
 			break;
 		case 55://7
 
-			scene_one_Ajay_matrix_part = false;
+			/*scene_one_Ajay_matrix_part = false;
 			scene_third_Bhushan_webNews_part = false;
 			scene_fourth_Nagesh_city_part = false;
 			scene_fifth_Bharat_paper_part = false;
 			scene_sixth_Nagesh_city_part = false;
-			scene_seventh_Bhushan_webNews_part = true;
+			scene_seventh_Bhushan_webNews_part = true;*/
 			break;
 		case 76: // for 'L' or 'l'
             if(bLKeyPressed==false)
@@ -177,7 +181,7 @@ function keyDown(event)
 			}
 			break;
 			
-		case 40://Down Arrow
+		/*case 40://Down Arrow
 		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraPositionZ_city+=1.0;
@@ -193,7 +197,7 @@ function keyDown(event)
 			cameraCentreZ_city=cameraPositionZ_city-0.1;
 			console.log("cameraAngleX"+cameraAngleX_city+"\ncameraAngleY"+cameraAngleY_city);
 		}
-		break;
+		break;*/
 		case 100://Left NumPad  Arrow 4
 		if(scene_one_Ajay_matrix_part == true)
 		{
@@ -203,16 +207,16 @@ function keyDown(event)
 				fCDecrement = 0.1;// * 0.5;// * 5.0;
 				bMatrixScene = true;
 		}
-		if(scene_third_Nagesh_city_part == true)
+	/*	if(scene_third_Nagesh_city_part == true)
 		{
 			//cameraAngleY=Math.atan(((cameraCentreZ-cameraPositionZ)/(cameraCentreX-cameraPositionX) ));
 			cameraAngleY_city-=0.01;
 			cameraCentreX_city=cameraPositionX_city+(0.1-Math.abs(cameraCentreY_city))*Math.cos(cameraAngleY_city);
 			cameraCentreZ_city=cameraPositionZ_city+(0.1)*Math.sin(cameraAngleY_city);
 			console.log("cameraCentreX="+cameraCentreX_city+"cameraCentreZ"+cameraCentreZ_city+"\ncameraPositionX"+cameraPositionX_city+"cameraPositionZ:"+cameraCentreZ_city+"\ncameraAngleY"+cameraAngleY_city+"\ncameraAngleX"+cameraAngleX_city);
-		}
+		}*/
 		break;
-		case 102://Right Numpad Arrow 6
+		/*case 102://Right Numpad Arrow 6
 		if(scene_third_Nagesh_city_part == true)
 		{
 			cameraAngleY_city+=0.01;
@@ -238,7 +242,7 @@ function keyDown(event)
 			cameraCentreZ_city=cameraPositionZ_city+(0.1)*Math.sin(cameraAngleX_city);
 			console.log("cameraCentreY="+cameraCentreY_city+"cameraCentreZ"+cameraCentreZ_city+"\ncameraPositionX"+cameraPositionX_city+"cameraPositionZ:"+cameraCentreZ_city+"\ncameraAngleX"+cameraAngleX_city+"\ncameraAngleY"+cameraAngleY_city);
 		}
-		break;
+		break;*/
 	}
 	
 }
@@ -303,22 +307,28 @@ function draw()
 		OnLine_Paper_draw();
 		
 	}
-	if(scene_fourth_Nagesh_city_part == true)
+	if(finishBhushansThirdScene == true)
 	{
+		scene_third_Bhushan_webNews_part = false;
+		
 		drawCubemap();
 		//City_Draw();
 		City_Draw_Normal();
 		
 	}
 	
-	if(scene_fifth_Bharat_paper_part == true)
+	//if(scene_fifth_Bharat_paper_part == true)
+	if(finishNageshsFourthScene == true)
 	{
+		finishBhushansThirdScene = false;
 		paper_draw();
 		
 	}
 	
-	if(scene_sixth_Nagesh_city_part == true)
+	//if(scene_sixth_Nagesh_city_part == true)
+	if(finishBharatsFifthScene == true)
 	{
+		finishNageshsFourthScene = false;
 		drawCubemap();
 		City_Draw_Reverse();
 	}

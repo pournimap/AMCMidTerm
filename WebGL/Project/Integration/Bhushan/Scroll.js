@@ -573,7 +573,7 @@ function RenderVideo() {
   if(paperZtranslate > 0.0)
   {
 	  paperZtranslate = 0.1;
-	  Finish = true;
+	  finishBhushansThirdScene = true;
   }
   
   

@@ -804,6 +804,11 @@ function paper_update()
 			{
 				cameraCenter[1] = cameraCenter[1] - 0.01;
 			}
+			
+			if((cameraPosition[0] >= 0.0) && (cameraPosition[1] <= 0.073) && (cameraPosition[2] < 5.195))
+			{
+				finishBharatsFifthScene = true;
+			}
 		}
 
 	}
