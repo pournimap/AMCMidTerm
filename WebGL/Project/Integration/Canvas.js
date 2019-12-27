@@ -19,12 +19,24 @@ var perspectiveProjectionMatrix;
 var bLKeyPressed=false;
 
 //KeysForSeperatePart
-//Ajay's Matrix first Part
+//1.Ajay's Matrix first Part
 var scene_one_Ajay_matrix_part = true;
-//Nagesh's City fourth Part
-var scene_third_Nagesh_city_part = false;
-//Bharat's paper fourth Part
-var scene_fourth_Bharat_paper_part = false;
+
+//3.Bhushan's WebPaper second part
+var scene_third_Bhushan_webNews_part = false;
+
+//4.Nagesh's City fourth Part
+var scene_fourth_Nagesh_city_part = false;
+
+//5.Bharat's paper fourth Part
+var scene_fifth_Bharat_paper_part = false;
+
+//6.Nagesh's City fourth Part
+var scene_sixth_Nagesh_city_part = false;
+
+//7.Bhushan's WebPaper second part
+var scene_seventh_Bhushan_webNews_part = false;
+
 
 // To start animation : To have requestAnimationFrame() to be called "cross-browser" compatible
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -79,18 +91,62 @@ function keyDown(event)
 		//1		
 		case 49: //1
 			scene_one_Ajay_matrix_part = true;
-			scene_third_Nagesh_city_part = false;
-			scene_fourth_Bharat_paper_part = false;
+			scene_third_Bhushan_webNews_part = false;
+			scene_fourth_Nagesh_city_part = false;
+			scene_fifth_Bharat_paper_part = false;
+			scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = false;
+		break;
+		case 50://2
+			
 		break;
 		case 51: //3
 			scene_one_Ajay_matrix_part = false;
-			scene_third_Nagesh_city_part = true;
-			scene_fourth_Bharat_paper_part = false;
+			scene_third_Bhushan_webNews_part = true;
+			scene_fourth_Nagesh_city_part = false;
+			scene_fifth_Bharat_paper_part = false;
+			scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = false;
+			
 			break;
 		case 52: //4
+		
 			scene_one_Ajay_matrix_part = false;
-			scene_third_Nagesh_city_part = false;
-			scene_fourth_Bharat_paper_part = true;
+			scene_third_Bhushan_webNews_part = false;
+			scene_fourth_Nagesh_city_part = true;
+			scene_fifth_Bharat_paper_part = false;
+			scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = false;
+			
+			break;
+		case 53://5
+		
+		
+			scene_one_Ajay_matrix_part = false;
+			scene_third_Bhushan_webNews_part = false;
+			scene_fourth_Nagesh_city_part = false;
+			scene_fifth_Bharat_paper_part = true;
+			scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = false;
+						
+			break;
+		case 54://6
+
+			scene_one_Ajay_matrix_part = false;
+			scene_third_Bhushan_webNews_part = false;
+			scene_fourth_Nagesh_city_part = false;
+			scene_fifth_Bharat_paper_part = false;
+			scene_sixth_Nagesh_city_part = true;
+			scene_seventh_Bhushan_webNews_part = false;
+			break;
+		case 55://7
+
+			scene_one_Ajay_matrix_part = false;
+			scene_third_Bhushan_webNews_part = false;
+			scene_fourth_Nagesh_city_part = false;
+			scene_fifth_Bharat_paper_part = false;
+			scene_sixth_Nagesh_city_part = false;
+			scene_seventh_Bhushan_webNews_part = true;
 			break;
 		case 76: // for 'L' or 'l'
             if(bLKeyPressed==false)
@@ -117,6 +173,7 @@ function keyDown(event)
 				fSpeed = 0.4;// * 0.5;// * 5.5;
 				fCSpeed = 0.0512;// * 0.5;// * 5.5;
 				fCDecrement = 0.1;// * 0.5;// * 5.0;
+				bMatrixScene = true;
 			}
 			break;
 			
@@ -144,6 +201,7 @@ function keyDown(event)
 				fSpeed = 0.4;// * 0.5;// * 5.5;
 				fCSpeed = 0.0512;// * 0.5;// * 5.5;
 				fCDecrement = 0.1;// * 0.5;// * 5.0;
+				bMatrixScene = true;
 		}
 		if(scene_third_Nagesh_city_part == true)
 		{
@@ -209,13 +267,18 @@ function init()
 	//1st part Ajay's Matrix init
 	Matrix_Initialize();
 	
+	//3rd part Bhushan's WebNews init
+	OnLine_Paper_init();
+	
 	//4rth part Nagesh's City init
 	City_Initialize();
 	initCubeMap();
 	
-	//4rth part Bharat's paper falling
+	//5th part Bharat's paper falling
 	paper_init();
 	
+	//7th Bhushan's Reverse WebNews init
+	OnLineReverce_Paper_init();
 	// set clear color
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);	// blue
 	
@@ -234,15 +297,37 @@ function draw()
 		Matrix_Draw();
 	}
 	
-	if(scene_third_Nagesh_city_part == true)
+	if(scene_third_Bhushan_webNews_part == true)
+	{
+		scrollstart = true;
+		OnLine_Paper_draw();
+		
+	}
+	if(scene_fourth_Nagesh_city_part == true)
 	{
 		drawCubemap();
-		City_Draw();
+		//City_Draw();
+		City_Draw_Normal();
+		
 	}
 	
-	if(scene_fourth_Bharat_paper_part == true)
+	if(scene_fifth_Bharat_paper_part == true)
 	{
 		paper_draw();
+		
+	}
+	
+	if(scene_sixth_Nagesh_city_part == true)
+	{
+		drawCubemap();
+		City_Draw_Reverse();
+	}
+	
+	if(scene_seventh_Bhushan_webNews_part == true)
+	{
+		//reverse
+		revese = true;
+		OnLineReverce_Paper_draw();
 	}
 	requestAnimationFrame(draw, canvas);
 }
@@ -273,6 +358,8 @@ function uninitialize()
 	//perFragmentUninitialize();
 	
 	Matrix_Uninitialize();
+	
+	OnLine_Paper_unintialize();
 	
 	City_Uninitialize();
 	

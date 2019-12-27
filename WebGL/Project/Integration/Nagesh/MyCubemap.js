@@ -68,7 +68,9 @@ function initCubeMap()
 	/*"vec3 dir = normalize(varying_pixel_position);"+
 	"vec4 sampleout = texture(uniform_cubemap, vec3(-1.0, 1.0, 1.0) * dir);"+
 	"FragColor = sampleout;"+*/
-	"FragColor = texture(uniform_cubemap, outTexcoord);" +
+	"vec3 tempTexCoord = outTexcoord;" +
+	"tempTexCoord.y = -1.0 * tempTexCoord.y;" +
+	"FragColor = texture(uniform_cubemap, tempTexCoord);" +
 	"}";
 	
 	/*"out vec4 FragColor;" +
@@ -279,7 +281,7 @@ function load_cubemap_files(e)
 var currentTime = 0.0;
 function drawCubemap()
 {
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.useProgram(shaderProgramObject_cubemap);
 	gl.disable(gl.DEPTH_TEST);

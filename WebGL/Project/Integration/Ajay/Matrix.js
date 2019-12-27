@@ -129,7 +129,7 @@ var gShaderProgramObject = 0;
 var getFramebufferViewportWidth = 0;
 var getFramebufferViewportHeight = 0;
 
-var bMatrixScene = true;
+var bMatrixScene = false;
 
 // code
 function makeFramebufferObject() {
@@ -706,222 +706,221 @@ function Matrix_Initialize() {
 
 function Matrix_Draw() {
 	// code
-	if (!bMatrixScene) {
-		return;
-	}
-	
 	// variable declarations
 	var one = new Float32Array([1.0 ]);
 	var black = new Float32Array ([ 0.0 , 0.0 , 0.0 , 1.0  ]);
 	
 	// code
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	if (bMatrixScene == true) {
 	
-	gl.useProgram(Matrix_ShaderProgramObject);
-	
-	// **** FRAMEBUFFER ****
-	gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-	
-	gl.clearBufferfv(gl.COLOR, 0, black);
-	gl.clearBufferfv(gl.DEPTH, 0, one);
-	if (bFullscreen) {
-		gl.viewport(0, 0, canvas.width - 384, canvas.height + 456);
-	}
-	else {
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		
+		gl.useProgram(Matrix_ShaderProgramObject);
+		
+		// **** FRAMEBUFFER ****
+		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+		
+		gl.clearBufferfv(gl.COLOR, 0, black);
+		gl.clearBufferfv(gl.DEPTH, 0, one);
+		if (bFullscreen) {
+			gl.viewport(0, 0, canvas.width - 384, canvas.height + 456);
+		}
+		else {
+			gl.viewport(0, 0, canvas.width, canvas.height);
+		}
+		
+		// Columns
+		
+		if (bMatrixHasDisappeared == false) {
+		
+			if (countOfReappearance >= 1000) {
+				Column_1(0.0);
+				Column_2(0.0);
+				Column_3(0.0);
+				Column_4(0.0);
+				Column_5(0.0);
+				Column_6(0.0);
+				Column_7(0.0);
+				Column_8(0.0);
+				
+				Column_1(5.0);
+				Column_4(3.0);
+				Column_2(5.0);
+				Column_5(4.0);
+				Column_3(6.5);
+				Column_7(5.5);
+				Column_6(5.0);
+				Column_2(8.0);
+				Column_4(10.0);
+				Column_8(5.0);
+				Column_7(9.0);
+				Column_1(10.0);
+				Column_2(14.0);
+				Column_4(14.0);
+				Column_1(15.0);
+				
+				Column_8(-10.0);
+				Column_3(2.0);
+				Column_5(-4.0);
+				Column_1(-2.5);
+				Column_6(8.0);
+			}
+			if (countOfReappearance <= 4) {
+				Column_1(0.0);
+				Column_2(0.0);
+				Column_3(0.0);
+				Column_4(0.0);
+				Column_5(0.0);
+				Column_6(0.0);
+				Column_7(0.0);
+				Column_8(0.0);
+				
+				Column_1(5.0);
+				Column_1(10.0);
+				Column_2(12.0);
+				Column_3(13.0);
+				Column_4(3.0);
+				Column_4(10.0);
+				Column_4(5.0);
+				Column_4(7.0);
+				Column_4(10.0);
+				Column_2(9.0);
+				Column_2(-1.0);
+				Column_2(5.0);
+				Column_5(4.0);
+				Column_3(-3.5);
+				Column_3(-6.5);
+				Column_3(6.5);
+				Column_7(5.5);
+				Column_6(5.0);
+				Column_2(8.0);
+				Column_4(10.0);
+				Column_8(5.0);
+				Column_7(9.0);
+				Column_1(10.0);
+				Column_2(14.0);
+				Column_4(14.0);
+				Column_1(15.0);
+				
+				Column_8(-10.0);
+				Column_3(2.0);
+				Column_5(-4.0);
+				Column_1(-2.5);
+				Column_6(8.0);
+				
+				Column_5(-2.0);
+				Column_5(-8.0);
+				Column_6(1.0);
+				Column_6(6.0);
+				Column_7(1.5);
+				Column_7(3.5);
+			}
+			
+			if (framebufferQuadYTranslate >= -0.25) {
+				Column_1(8.0);
+				Column_1(7.0);
+				Column_1(6.0);
+				Column_1(5.0);
+				Column_1(4.0);
+				Column_1(3.0);
+				Column_1(2.0);
+				Column_2(6.0);
+				Column_2(5.0);
+				Column_2(4.0);
+				Column_2(3.0);
+				Column_2(1.0);
+				Column_2(5.0);
+				Column_3(4.0);
+				Column_3(3.0);
+				Column_3(3.0);
+				Column_4(0.0);
+				Column_4(1.0);
+				Column_4(2.0);
+				Column_4(0.0);
+				Column_4(-2.0);
+				Column_5(1.0);
+				Column_5(-1.0);
+				Column_5(0.0);
+				Column_5(4.0);
+				Column_6(-2.0);
+				Column_7(-2.0);
+				Column_8(-2.0);
+				Column_1(-2.0);
+			}
+			
+			makeMatrixStop();
+		}	
+		
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		
+		gl.useProgram(null);
+		
+		// **** RENDER TO TEXTURE ****
+		gl.useProgram(textureShaderProgramObject);
+		
 		gl.viewport(0, 0, canvas.width, canvas.height);
-	}
-	
-	// Columns
-	
-	if (bMatrixHasDisappeared == false) {
-	
-		if (countOfReappearance >= 1000) {
-			Column_1(0.0);
-			Column_2(0.0);
-			Column_3(0.0);
-			Column_4(0.0);
-			Column_5(0.0);
-			Column_6(0.0);
-			Column_7(0.0);
-			Column_8(0.0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, color_texture);
+		
+		var modelViewMatrix = mat4.create();
+		var viewMatrix = mat4.create();
+		var modelViewProjectionMatrix = mat4.create();
+		
+		//mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, -0.34, -2.0]);
+		//mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, -0.5, -6.0]);
+		//mat4.lookAt(modelViewMatrix, [lookAtX, lookAtY, lookAtZ], [0.0, 0.0, -6.5], [0.0, 1.0, 0.0]);
+		//mat4.scale(modelViewMatrix, modelViewMatrix, [0.64, 0.55, 0.0]);
+		mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, framebufferQuadYTranslate, -5.9]);
+		mat4.scale(modelViewMatrix, modelViewMatrix, [0.75, 0.6, 0.0]);
+		mat4.lookAt(viewMatrix, [lookAtX, lookAtY, lookAtZ], [centerX, centerY, centerZ], [upX, upY, upZ]);
+		mat4.multiply(modelViewMatrix, viewMatrix, modelViewMatrix);
+		mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
+		
+		gl.uniform1i(samplerTextureUniform, 0);
+		gl.uniformMatrix4fv(mvpTextureUniform, false, modelViewProjectionMatrix);
+		
+		if (blinkCount >= 30 && bStartMatrixAnimation) {
+			IsFirstColumnReady = true;
+			IsThirdColumnReady = true;	
 			
-			Column_1(5.0);
-			Column_4(3.0);
-			Column_2(5.0);
-			Column_5(4.0);
-			Column_3(6.5);
-			Column_7(5.5);
-			Column_6(5.0);
-			Column_2(8.0);
-			Column_4(10.0);
-			Column_8(5.0);
-			Column_7(9.0);
-			Column_1(10.0);
-			Column_2(14.0);
-			Column_4(14.0);
-			Column_1(15.0);
-			
-			Column_8(-10.0);
-			Column_3(2.0);
-			Column_5(-4.0);
-			Column_1(-2.5);
-			Column_6(8.0);
-		}
-		if (countOfReappearance <= 4) {
-			Column_1(0.0);
-			Column_2(0.0);
-			Column_3(0.0);
-			Column_4(0.0);
-			Column_5(0.0);
-			Column_6(0.0);
-			Column_7(0.0);
-			Column_8(0.0);
-			
-			Column_1(5.0);
-			Column_1(10.0);
-			Column_2(12.0);
-			Column_3(13.0);
-			Column_4(3.0);
-			Column_4(10.0);
-			Column_4(5.0);
-			Column_4(7.0);
-			Column_4(10.0);
-			Column_2(9.0);
-			Column_2(-1.0);
-			Column_2(5.0);
-			Column_5(4.0);
-			Column_3(-3.5);
-			Column_3(-6.5);
-			Column_3(6.5);
-			Column_7(5.5);
-			Column_6(5.0);
-			Column_2(8.0);
-			Column_4(10.0);
-			Column_8(5.0);
-			Column_7(9.0);
-			Column_1(10.0);
-			Column_2(14.0);
-			Column_4(14.0);
-			Column_1(15.0);
-			
-			Column_8(-10.0);
-			Column_3(2.0);
-			Column_5(-4.0);
-			Column_1(-2.5);
-			Column_6(8.0);
-			
-			Column_5(-2.0);
-			Column_5(-8.0);
-			Column_6(1.0);
-			Column_6(6.0);
-			Column_7(1.5);
-			Column_7(3.5);
+			gl.bindVertexArray(vao_framebuffer_quad)
+			gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+			gl.bindVertexArray(null);
 		}
 		
-		if (framebufferQuadYTranslate >= -0.25) {
-			Column_1(8.0);
-			Column_1(7.0);
-			Column_1(6.0);
-			Column_1(5.0);
-			Column_1(4.0);
-			Column_1(3.0);
-			Column_1(2.0);
-			Column_2(6.0);
-			Column_2(5.0);
-			Column_2(4.0);
-			Column_2(3.0);
-			Column_2(1.0);
-			Column_2(5.0);
-			Column_3(4.0);
-			Column_3(3.0);
-			Column_3(3.0);
-			Column_4(0.0);
-			Column_4(1.0);
-			Column_4(2.0);
-			Column_4(0.0);
-			Column_4(-2.0);
-			Column_5(1.0);
-			Column_5(-1.0);
-			Column_5(0.0);
-			Column_5(4.0);
-			Column_6(-2.0);
-			Column_7(-2.0);
-			Column_8(-2.0);
-			Column_1(-2.0);
-		}
+		gl.bindTexture(gl.TEXTURE_2D, null);
 		
-		makeMatrixStop();
-	}	
-	
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	
-	gl.useProgram(null);
-	
-	// **** RENDER TO TEXTURE ****
-	gl.useProgram(textureShaderProgramObject);
-	
-	gl.viewport(0, 0, canvas.width, canvas.height);
-	
-	gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, color_texture);
-	
-	var modelViewMatrix = mat4.create();
-	var viewMatrix = mat4.create();
-	var modelViewProjectionMatrix = mat4.create();
-	
-	//mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, -0.34, -2.0]);
-	//mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, -0.5, -6.0]);
-	//mat4.lookAt(modelViewMatrix, [lookAtX, lookAtY, lookAtZ], [0.0, 0.0, -6.5], [0.0, 1.0, 0.0]);
-	//mat4.scale(modelViewMatrix, modelViewMatrix, [0.64, 0.55, 0.0]);
-	mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, framebufferQuadYTranslate, -5.9]);
-	mat4.scale(modelViewMatrix, modelViewMatrix, [0.75, 0.6, 0.0]);
-	mat4.lookAt(viewMatrix, [lookAtX, lookAtY, lookAtZ], [centerX, centerY, centerZ], [upX, upY, upZ]);
-	mat4.multiply(modelViewMatrix, viewMatrix, modelViewMatrix);
-	mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
-	
-	gl.uniform1i(samplerTextureUniform, 0);
-	gl.uniformMatrix4fv(mvpTextureUniform, false, modelViewProjectionMatrix);
-	
-	if (blinkCount >= 30 && bStartMatrixAnimation) {
-		IsFirstColumnReady = true;
-		IsThirdColumnReady = true;	
+		modelViewMatrix = mat4.create();
+		viewMatrix = mat4.create();
+		modelViewProjectionMatrix = mat4.create();
 		
-		gl.bindVertexArray(vao_framebuffer_quad)
-		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-		gl.bindVertexArray(null);
-	}
-	
-	gl.bindTexture(gl.TEXTURE_2D, null);
-	
-	modelViewMatrix = mat4.create();
-	viewMatrix = mat4.create();
-	modelViewProjectionMatrix = mat4.create();
-	
-	gl.viewport(0, 0, canvas.width, canvas.height);
-	
-	// **** DISPLAYING COMPUTER SCREEN ****
-	getComputerOnScreen();
-	//twoQuadAnimation();
-	
-	gl.useProgram(null);
-	
-	if (lookAtZ <= -5.53) {
-		displayMatrix();
-		if (xYTranslate == 0.0) {
-			//makeMatrixStop();
-			
-			if (bMatrixHasDisappeared) {
-				twoQuadAnimation();
+		gl.viewport(0, 0, canvas.width, canvas.height);
+		
+		// **** DISPLAYING COMPUTER SCREEN ****
+		getComputerOnScreen();
+		//twoQuadAnimation();
+		
+		gl.useProgram(null);
+		
+		if (lookAtZ <= -5.53) {
+			displayMatrix();
+			if (xYTranslate == 0.0) {
+				//makeMatrixStop();
+				
+				if (bMatrixHasDisappeared) {
+					twoQuadAnimation();
+				}
 			}
 		}
+		
+		makeARoom();
+		if (blinkCount <= 30) {
+			makeRoomLightsBlink();
+		}
+		
+		Matrix_Update();
 	}
-	
-	makeARoom();
-	if (blinkCount <= 30) {
-		makeRoomLightsBlink();
-	}
-	
-	Matrix_Update();
 }
 
 function twoQuadAnimation() {
