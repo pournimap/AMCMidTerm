@@ -37,6 +37,7 @@ var finishBharatsFifthScene = false;
 
 //6.Nagesh's City fourth Part
 var scene_sixth_Nagesh_city_part = false;
+var finishNageshsSixthScene = false;
 
 //7.Bhushan's WebPaper second part
 var scene_seventh_Bhushan_webNews_part = false;
@@ -286,7 +287,7 @@ function draw()
 		City_Draw_Reverse();
 	}
 	
-	if(scene_seventh_Bhushan_webNews_part == true)
+	if(finishNageshsSixthScene == true)
 	{
 		//reverse
 		revese = true;

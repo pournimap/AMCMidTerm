@@ -19,10 +19,11 @@ var TaskBar;
 var TitleBar;
 var PaperBody;
 
+//var bodytranslate = 0.0;
 var bodytranslate = -6.7;
 var lastbodytranslate = 5.7;
-var videoscenbodytranslate = 0.7;
-var stadybodytranslate = 0.0;
+var videoscenbodytranslate = 1.2;
+var stadybodytranslate = 0.5;
 var firstflag = false;
 var secondflag = false;
 var Baground;
@@ -32,12 +33,12 @@ var video;
 var flag = false;
 var videostart = false;
 var count = 0;
-var scalex = -0.42;
-var scaley =  0.3;
+var scalex = 0.53;
+var scaley =  0.35;
 var scalez = 0.15;
 
-var translatex = -0.08;
-var translatey =  -0.2;
+var translatex = -0.6;
+var translatey =  -0.42;
 var translatez = -3.8;
 
 var paperXtranslate = 0.0;
@@ -285,13 +286,13 @@ function setupVideo(url) {
 
   video.autoplay = true;
   video.muted = true;
-  video.loop = true;
+  video.loop = false;
   copyVideo = true;
 
   // Waiting for these 2 events ensures
   // there is data in the video
 
-  video.addEventListener('playing', function() {
+  /*video.addEventListener('playing', function() {
      playing = true;
      checkReady();
   }, true);
@@ -299,7 +300,7 @@ function setupVideo(url) {
   video.addEventListener('timeupdate', function() {
      timeupdate = true;
      checkReady();
-  }, true);
+  }, true);*/
 
   video.src = url;
   video.play();
@@ -311,7 +312,7 @@ function setupVideo(url) {
 	
 	copyVideo = true;
   }
-
+  video.pause();
   return video;
 }
 
@@ -422,7 +423,7 @@ function OnLine_Paper_draw()
 	{
 		if((lastbodytranslate > bodytranslate)&&(firstflag == false)&&(secondflag == false))
 		{
-			bodytranslate = bodytranslate + 0.07;
+			bodytranslate = bodytranslate + 0.03;
 			
 		}
 		else if (secondflag == false)
@@ -447,18 +448,25 @@ function OnLine_Paper_draw()
 		{
 			if(stadybodytranslate < bodytranslate )
 			{
-				bodytranslate = bodytranslate - 0.006;
+				bodytranslate = bodytranslate - 0.001;
 				
 			}
 			else if(stadybodytranslate > bodytranslate)
+			{
 				videostart = true;
+				video.play();
+				 video.loop = false;
+			}
 			
 		}
 	}
 	
 	
 	if(videostart == true)
+	{
 		RenderVideo();
+		
+	}
 	
 	
 }
@@ -507,7 +515,7 @@ function RenderVideo() {
 
   mat4.translate(modelViewMatrix,     // destination matrix
                  modelViewMatrix,     // matrix to translate
-                 [translatex+ 0.75, translatey ,paperZtranslate-0.1]);  // amount to translate
+                 [translatex, translatey ,paperZtranslate-0.1]);  // amount to translate
 				/* if(flag == true)
 				 {
 					 mat4.rotate(modelViewMatrix,  // destination matrix
@@ -531,10 +539,10 @@ function RenderVideo() {
                  [scalex, scaley, scalez]); 
   
 
-  mat4.rotate(modelViewMatrix,  // destination matrix
+  /*mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,  // matrix to rotate
               3.14,// amount to rotate in radians
-              [0, 1, 0]);       // axis to rotate around (X)
+              [0, 1, 0]);       // axis to rotate around (X)*/
 
   
   // Tell WebGL to use our program when drawing
@@ -564,16 +572,27 @@ function RenderVideo() {
 	gl.bindVertexArray(null);
   // Update the rotation for the next VideoScene_draw
   
-  if(count > 1200)
+  if(count > 1910)
+  {
 	  flag = true;
+	  video.pause();
+  }
   
   if(flag == true)
+  {
 	  paperZtranslate = paperZtranslate+0.01;
+	  bodytranslate = bodytranslate + 0.0025;
+	  translatex = translatex + 0.0017;
+	  translatey = translatey + 0.0012;
+	  paperXtranslate = paperXtranslate + 0.0025;
+  }
   
   if(paperZtranslate > 0.0)
   {
 	  paperZtranslate = 0.1;
 	  finishBhushansThirdScene = true;
+	  videostart = false;
+	  
   }
   
   

@@ -411,6 +411,7 @@ function City_Draw()
 		else
 		{
 			normalFlowNageshScene=true;
+			finishNageshsSixthScene = true;
 		}
 		
 	}

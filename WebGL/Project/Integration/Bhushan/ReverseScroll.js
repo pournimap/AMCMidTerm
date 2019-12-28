@@ -7,8 +7,8 @@ var PaperBodyRev;
 
 var Revbodytranslate = -6.7;
 var Revlastbodytranslate = 5.7;
-var Revvideoscenbodytranslate = 0.7;
-var Revstadybodytranslate = 0.0;
+var Revvideoscenbodytranslate = 1.2;
+var Revstadybodytranslate = 0.5;
 
 var RevpaperXtranslate = 0.0;
 var RevpaperYtranslate = -1.98;
@@ -17,6 +17,8 @@ var RevpaperXscale = 1.55;
 var RevpaperYscale = -0.1;
 var RevpaperZscale = 1.5;
 
+var Revfirstflag = false;
+var Revsecondflag = false;
 function OnLineReverce_Paper_init()
 {
 	
@@ -26,7 +28,7 @@ function OnLineReverce_Paper_init()
 	//Load Reverse Paper texture
 	PaperBodyRev = gl.createTexture();
 	PaperBodyRev.image = new Image();
-	PaperBodyRev.image.src = "PaperBodyRev.png";
+	PaperBodyRev.image.src = "resources/webNews/PaperBodyRev.png";
 	PaperBodyRev.image.onload = function()
 	{
 		gl.bindTexture(gl.TEXTURE_2D, PaperBodyRev);
@@ -130,32 +132,32 @@ function OnLineReverce_Paper_draw()
 	
     
 	
-	if (scrollstart == true)
-	{
-		if((Revlastbodytranslate > Revbodytranslate)&&(firstflag == false)&&(secondflag == false))
+	//if (scrollstart == true)
+	//{
+		if((Revlastbodytranslate > Revbodytranslate)&&(Revfirstflag == false)&&(Revsecondflag == false))
 		{
 			Revbodytranslate = Revbodytranslate + 0.07;
 			
 		}
-		else if (secondflag == false)
+		else if (Revsecondflag == false)
 		{
-			firstflag = true;
+			Revfirstflag = true;
 		}
 		
 		
-		if((firstflag == true)&&(Revvideoscenbodytranslate < Revbodytranslate ))
+		if((Revfirstflag == true)&&(Revvideoscenbodytranslate < Revbodytranslate ))
 		{
 			Revbodytranslate = Revbodytranslate - 0.04;
 			
 		}
-		else if((firstflag == true)&&(Revvideoscenbodytranslate > Revbodytranslate ))
+		else if((Revfirstflag == true)&&(Revvideoscenbodytranslate > Revbodytranslate ))
 		{
-			secondflag = true;
-			firstflag = false;
+			Revsecondflag = true;
+			Revfirstflag = false;
 		}
 		
 		
-		if(secondflag == true)
+		if(Revsecondflag == true)
 		{
 			if(Revstadybodytranslate < Revbodytranslate )
 			{
@@ -166,7 +168,7 @@ function OnLineReverce_Paper_draw()
 				videostart = true;
 			
 		}
-	}
+	//}
 	
 	
 	
