@@ -9,8 +9,10 @@ var shaderProgramObject_paper2;
 
 var vao_paper;
 var vao_paper2;
+var vao_cursor;
 
 var vbo_position;
+var vbo_color;
 var vbo_texture;
 
 var mUniform;
@@ -28,6 +30,9 @@ var uniform_texture0_sampler;
 
 var FirstQuad 	= -0.55;
 var SecondQuad 	= -0.1;
+
+var cursor_X = 2.0;
+var cursor_Y = -1.0;
 
 var show_link 	= 0;
 // function for loading texture
@@ -150,14 +155,18 @@ function paper_init()
 	"\n" +
 	"precision highp float;" +
 	"in vec4 vPosition;" +
+	"in vec4 vColor;" +
 
 	"uniform mat4 u_m_matrix;" +
 	"uniform mat4 u_v_matrix;" +
 	"uniform mat4 u_p_matrix;" +
 
+	"out vec4 out_color;" +
+
 	"void main(void)" +
 	"{" +
 		"gl_Position 		= u_p_matrix * u_v_matrix * u_m_matrix *  vPosition;" +
+		"out_color 			= vColor;" +
 	"}";
 
 	vertexShaderObject_paper2 = gl.createShader(gl.VERTEX_SHADER);
@@ -178,12 +187,13 @@ function paper_init()
 	"#version 300 es" +
 	"\n" +
 	"precision highp float;" +
+	"in vec4 out_color;" +
 	
 	"out vec4 FragColor;" +
 
 	"void main(void)" +
 	"{" +
-		"FragColor = vec4(0.0,0.0,0.0,1.0);"+
+		"FragColor = out_color;"+
 	"}";
 
 	fragmentShaderObject_paper2 = gl.createShader(gl.FRAGMENT_SHADER);
@@ -205,6 +215,7 @@ function paper_init()
 	gl.attachShader(shaderProgramObject_paper2, fragmentShaderObject_paper2);
 
 	gl.bindAttribLocation(shaderProgramObject_paper2, WebGLMacros.AMC_ATTRIBUTE_POSITION, "vPosition");
+	gl.bindAttribLocation(shaderProgramObject_paper2, WebGLMacros.AMC_ATTRIBUTE_COLOR, "vColor");
 
 	gl.linkProgram(shaderProgramObject_paper2);
 	if(!gl.getProgramParameter(shaderProgramObject_paper2, gl.LINK_STATUS))
@@ -273,6 +284,14 @@ function paper_init()
 		 1.2, -0.1, 0.00		 
 	]);
 
+	quadColor = new Float32Array
+	([
+ 		0.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0
+	]);
+
 	vao_paper2 = gl.createVertexArray();
 	gl.bindVertexArray(vao_paper2);
 
@@ -281,6 +300,58 @@ function paper_init()
 	gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
 	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+	vbo_color = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vbo_color);
+	gl.bufferData(gl.ARRAY_BUFFER, quadColor, gl.STATIC_DRAW);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		
+	gl.bindVertexArray(null);
+
+// 3rd paper
+	quadVertices = new Float32Array
+	([
+		 0.00, 0.05, 0.00,
+		-0.03, 0.0, 0.00,
+		 0.03, 0.0, 0.00,
+		 0.00, 0.05, 0.00,
+		
+		-0.01, 0.0, 0.00,
+		-0.01,-0.02, 0.00,
+		 0.01,-0.02, 0.00,
+		 0.01, 0.0, 0.00,
+	]);
+
+	quadColor = new Float32Array
+	([
+ 		1.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0,
+		1.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0,
+		0.0,0.0,0.0
+	]);
+
+	vao_cursor = gl.createVertexArray();
+	gl.bindVertexArray(vao_cursor);
+
+	vbo_position = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vbo_position);
+	gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_POSITION);
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+	vbo_color = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vbo_color);
+	gl.bufferData(gl.ARRAY_BUFFER, quadColor, gl.STATIC_DRAW);
+	gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_COLOR, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_COLOR);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		
 	gl.bindVertexArray(null);
@@ -300,6 +371,7 @@ function paper_init()
 function paper_draw()
 {	
 	var modelMatrix				= mat4.create();
+	var rotateMatrix			= mat4.create();
 	var viewMatrix				= mat4.create();
 	var projectionMatrix		= mat4.create();
 
@@ -339,6 +411,7 @@ function paper_draw()
 		// shader program object 2
 		gl.useProgram(shaderProgramObject_paper2);
 
+		// 1st quad
 		mat4.identity(modelMatrix);
 		mat4.translate(modelMatrix, modelMatrix, [FirstQuad, 0.41, -2.0]);
 
@@ -350,6 +423,7 @@ function paper_draw()
 		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 		gl.bindVertexArray(null);
 
+		// 2nd quad
 		mat4.identity(modelMatrix);
 		mat4.translate(modelMatrix, modelMatrix, [SecondQuad, 0.2, -2.0]);
 
@@ -361,8 +435,29 @@ function paper_draw()
 		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 		gl.bindVertexArray(null);
 
+		
+
 		gl.useProgram(null);
-	}	
+	}
+	gl.useProgram(shaderProgramObject_paper2);
+	// cursor
+	if(show_link == 1)
+	{
+		mat4.identity(modelMatrix);
+		mat4.identity(rotateMatrix);
+		mat4.translate(modelMatrix, modelMatrix, [cursor_X, cursor_Y, -2.0]);
+		mat4.rotateZ(modelMatrix,modelMatrix,degToRad(45.0));
+
+		gl.uniformMatrix4fv(mUniform2, false, modelMatrix);
+		gl.uniformMatrix4fv(vUniform2, false, viewMatrix);
+		gl.uniformMatrix4fv(pUniform2, false, projectionMatrix);
+
+		gl.bindVertexArray(vao_cursor);
+		gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+		gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+		gl.bindVertexArray(null);
+	}
+	gl.useProgram(null);	
 	paper_update();
 	
 }
@@ -386,6 +481,17 @@ function paper_update()
 	if(SecondQuad >= 3.0)
 	{
 		show_link = 1;
+	}
+	if(show_link == 1)
+	{
+		if(cursor_X >= 0.0)
+		{
+			cursor_X = cursor_X - 0.005;
+		}
+		if(cursor_Y <= 0.3)
+		{
+			cursor_Y = cursor_Y + 0.005;
+		}
 	}
 }
 
