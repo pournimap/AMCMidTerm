@@ -441,17 +441,19 @@ function paper_init()
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);	
 	
-	gl.enable(gl.BLEND);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	//gl.enable(gl.BLEND);
+	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	gl.enable(gl.DEPTH_TEST);
 	gl.depthFunc(gl.LEQUAL);
-	gl.enable(gl.CULL_FACE);					// if this is enable, texture will not get applied on backside (inside)
+	//gl.enable(gl.CULL_FACE);					// if this is enable, texture will not get applied on backside (inside)
 
 	perspectiveProjectionMatrix = mat4.create();
 }
 
 function paper_draw()
 {
+	gl.enable(gl.CULL_FACE);
+	
 	var modelMatrix				= mat4.create();
 	var rotateMatrix			= mat4.create();
 	var viewMatrix				= mat4.create();
@@ -544,6 +546,7 @@ function paper_draw()
 	}
 		
 	paper_update();
+	gl.disable(gl.CULL_FACE);
 }
 
 function paper_update()
@@ -1031,6 +1034,30 @@ function paper_unititialize()
 	{
 		gl.deleteTexture(Paper_texture4);
 		Paper_texture4 = 0;
+	}
+
+	if(reverse_Paper_texture1)
+	{
+		gl.deleteTexture(reverse_Paper_texture1);
+		reverse_Paper_texture1 = 0;
+	}
+
+	if(reverse_Paper_texture2)
+	{
+		gl.deleteTexture(reverse_Paper_texture2);
+		reverse_Paper_texture2 = 0;
+	}
+
+	if(reverse_Paper_texture3)
+	{
+		gl.deleteTexture(reverse_Paper_texture3);
+		reverse_Paper_texture3 = 0;
+	}
+
+	if(reverse_Paper_texture4)
+	{
+		gl.deleteTexture(reverse_Paper_texture4);
+		reverse_Paper_texture4 = 0;
 	}
 
 // vao
